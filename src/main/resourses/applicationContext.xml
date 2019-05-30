@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath:musicPlayer.properties"/>
+    <context:annotation-config/>
+
+    <!--Задание 1 и 2-->
+
+    <bean id="classicalMusicBean" class="com.company.music.ClassicalMusic">
+        <constructor-arg>
+            <set>
+                <value>Sonata for Piano No.11</value>
+                <value>The Magic Flute</value>
+                <value>Fantasy in D minor</value>
+                <value>Symphony No.40</value>
+                <value>Serenade No.13</value>
+            </set>
+        </constructor-arg>
+        <constructor-arg value="Classical Music"/>
+    </bean>
+    <bean id="rockMusicBean" class="com.company.music.RockMusic">
+        <property name="songSet">
+            <set>
+                <value>Smells Like Teen Spirit</value>
+                <value>Bohemian Rhapsody</value>
+                <value>I Want To Hold Your Hand</value>
+                <value>Let It Be</value>
+                <value>We Will Rock You</value>
+            </set>
+        </property>
+        <property name="musicClass" value="Rock Music"/>
+    </bean>
+    <bean id="jazzMusicBean" class="com.company.music.JazzMusic">
+        <property name="songSet">
+            <set>
+                <value>Take Five</value>
+                <value>Jazz Time</value>
+                <value>All The Things You Are</value>
+                <value>A Night In Tunisia</value>
+                <value>Morning Dance</value>
+            </set>
+        </property>
+        <property name="musicClass" value="Jazz Music"/>
+    </bean>
+
+    <bean id="musicPlayer"
+          class="com.company.music.MusicPlayer"
+          scope="prototype">
+        <property name="musicList">
+            <list>
+                <ref bean="classicalMusicBean"/>
+                <ref bean="rockMusicBean"/>
+                <ref bean="jazzMusicBean"/>
+            </list>
+        </property>
+        <property name="name" value="${musicPlayer.name}"/>
+        <property name="volume" value="${musicPlayer.volume}"/>
+    </bean>
+
+    <bean id="birthdayManager" class="com.company.BirthdayManager">
+        <constructor-arg>
+            <map>
+                <entry key="Megan Dust" value="21.06.1978"/>
+                <entry key="John Jonas" value="06.01.1981"/>
+                <entry key="Kate Green" value="04.04.1983"/>
+            </map>
+        </constructor-arg>
+    </bean>
+    <bean id="salaryManager" class="com.company.SalaryManager">
+        <property name="salaries">
+            <map>
+                <entry key="Megan Dust" value="30000"/>
+                <entry key="John Jonas" value="30000"/>
+                <entry key="Kate Green" value="70000"/>
+            </map>
+        </property>
+    </bean>
+
+    <!--Задание 3-->
+    <bean id="employee" class="com.company.Employee">
+        <property name="salary" value="30000"/>
+    </bean>
+    <bean id="manager" parent="employee" scope="prototype">
+        <property name="name" value="John Jonas"/>
+        <property name="department" value="management"/>
+    </bean>
+    <bean id="topManager" parent="employee" scope="prototype">
+        <property name="name" value="Kate Green"/>
+        <property name="department" value="management"/>
+        <property name="salary" value="70000"/>
+    </bean>
+    <!--Задание 4-->
+    <bean id="juniorAnalyst" parent="employee" scope="prototype">
+        <property name="name" value="#{ T(com.company.SimpleConfig).getName() }"/>
+        <property name="department" value="#{ T(com.company.SimpleConfig).getDepartment() }"/>
+    </bean>
+
+    <!--Задание 5-->
+    <bean id="circle" class="com.company.figures.Circle" scope="prototype">
+        <property name="radius" value="5"/>
+    </bean>
+    <bean id="rectangle" class="com.company.figures.Rectangle" scope="prototype">
+        <property name="length" value="6"/>
+        <property name="width" value="8"/>
+    </bean>
+    <bean id="square" class="com.company.figures.Square" scope="prototype">
+        <property name="length" value="6"/>
+    </bean>
+    <bean id="printCircle" class="com.company.figures.PrintCircle" autowire="byName">
+    </bean>
+    <bean id="printRectangle" class="com.company.figures.PrintRectangle" autowire="byType">
+    </bean>
+    <bean id="printSquare" class="com.company.figures.PrintSquare" autowire="constructor">
+    </bean>
+
+    <!--Задание 6-->
+    <bean id="printableFactory" class="com.company.factory.PrintableFactory">
+    </bean>
+    <bean id="printable" class="com.company.factory.Printable"
+          factory-bean="printableFactory" factory-method="getPrintable">
+    </bean>
+
+    <!--Задание 7-->
+    <bean id="passenger" class="com.company.Passenger" scope="prototype"></bean>
+    <bean id="car" class="com.company.Car">
+        <lookup-method name="createPassenger" bean="passenger"/>
+    </bean>
+
+
+</beans>
